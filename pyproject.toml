@@ -1,0 +1,7 @@
+[project]
+name = "pythontraininghall"
+version = "0.1.0"
+description = "Python训练馆，练习Python技能"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = []
