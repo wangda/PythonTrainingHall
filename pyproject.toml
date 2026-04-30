@@ -11,4 +11,21 @@ dependencies = [
     "matplotlib>=3.10.3",
     "opencv-python>=4.11.0.86",
     "wxpython>=4.2.3",
+    "torch>=2.7.1",
+    "torchvision>=0.22.1",
 ]
+
+# Pytorch配置见: https://uv.doczh.com/guides/integration/pytorch/#pytorch
+[tool.uv.sources]
+torch = [
+    { index = "pytorch-cpu" },
+]
+torchvision = [
+    { index = "pytorch-cpu" },
+]
+
+#
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
