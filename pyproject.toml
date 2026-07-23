@@ -13,6 +13,10 @@ dependencies = [
     "wxpython>=4.2.3",
     "torch>=2.7.1",
     "torchvision>=0.22.1",
+    "langgraph>=1.2.2",
+    "langchain>=1.3.2",
+    "langchain-openai>=1.2.2",
+    "typing-extensions>=4.15.0",
 ]
 
 # Pytorch配置见: https://uv.doczh.com/guides/integration/pytorch/#pytorch
