@@ -9,3 +9,5 @@ wheels/
 # Virtual environments
 .venv
 /.idea/
+/.omo/
+/database_train/test.db

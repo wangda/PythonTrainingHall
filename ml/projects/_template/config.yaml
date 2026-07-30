@@ -1,0 +1,30 @@
+# 项目配置 — 修改参数无需改代码
+data:
+  raw_path: "data/raw.csv"
+  processed_path: "data/processed.csv"
+  test_size: 0.2
+  random_seed: 42
+
+features:
+  numeric_cols:
+    - col1
+    - col2
+  categorical_cols:
+    - cat1
+  target_col: "target"
+
+model:
+  name: "linear_regression"  # 可选: linear_regression, lightgbm, mlp
+  params:
+    learning_rate: 0.01
+    max_epochs: 100
+    batch_size: 32
+    early_stopping_rounds: 10
+
+evaluation:
+  metrics:
+    - accuracy
+    - precision
+    - recall
+    - f1
+  save_confusion_matrix: true
