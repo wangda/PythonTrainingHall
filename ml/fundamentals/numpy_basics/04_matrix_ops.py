@@ -28,14 +28,20 @@ print("=" * 55)
 print("第一步：向量与矩阵的基本概念")
 print("=" * 55)
 
-v = np.array([1, 2, 3])
-print("向量 v:", v, " shape:", v.shape)     # (3,)
+# v = np.array([1, 2, 3])
+# print("向量 v:", v, " shape:", v.shape)     # (3,)
+v: np.ndarray[int] = np.array([1, 2, 3])
+print(f"向量 - 向量V：{v}, shape: {v.shape}")
 
-M = np.array([[1, 2, 3], [4, 5, 6]])
-print("矩阵 M:\n", M, "\n shape:", M.shape)  # (2, 3)
+# M = np.array([[1, 2, 3], [4, 5, 6]])
+# print("矩阵 M:\n", M, "\n shape:", M.shape)  # (2, 3)
+m: np.ndarray[ int] = np.array([[1, 2, 3], [4, 5, 6]])
+print(f"矩阵 - 矩阵M shape: {m.shape}, value=\n{m}")
 
-T = np.ones((2, 3, 4))                      # 三维张量
-print("张量 T shape:", T.shape)              # (2, 3, 4)
+# T = np.ones((2, 3, 4))                      # 三维张量
+# print("张量 T shape:", T.shape)              # (2, 3, 4)
+t = np.ones((2, 3, 4))
+print(f"张量 - t.shape={t.shape}, value=\n {t}")
 
 # ============================================================
 # 第二步：逐元素运算（Element-wise）
@@ -50,26 +56,39 @@ print("\n" + "=" * 55)
 print("第二步：逐元素运算（对应位置算）")
 print("=" * 55)
 
-a = np.array([1, 2, 3])
-b = np.array([4, 5, 6])
+# a = np.array([1, 2, 3])
+# b = np.array([4, 5, 6])
+a: np.ndarray[int] = np.array([1, 2, 3])
+b: np.ndarray[int] = np.array([4, 5, 6])
 
-print("a =", a)
-print("b =", b)
-print("a + b =", a + b)
-print("a - b =", a - b)
-print("a * b =", a * b)       # ← 逐元素乘！
-print("a / b =", a / b)
-print("a ** 2 =", a ** 2)
+# print("a =", a)
+# print("b =", b)
+# print("a + b =", a + b)
+# print("a - b =", a - b)
+# print("a * b =", a * b)       # ← 逐元素乘！
+# print("a / b =", a / b)
+# print("a ** 2 =", a ** 2)
+print(f"a = {a}")
+print(f"b = {b}")
+print(f"a + b = {a + b}")
+print(f"a - b = {a - b}")
+print(f"a * b = {a * b}")
+print(f"a / b = {a / b}")
+print(f"a ** 2 = {a ** 2}")
 
 # 二维数组的逐元素运算
-A = np.array([[1, 2], [3, 4]])
-B = np.array([[5, 6], [7, 8]])
-
-print("\nA:\n", A)
-print("B:\n", B)
-print("A * B（逐元素乘）:\n", A * B)
+# A = np.array([[1, 2], [3, 4]])
+# B = np.array([[5, 6], [7, 8]])
+# print("\nA:\n", A)
+# print("B:\n", B)
+# print("A * B（逐元素乘）:\n", A * B)
 # 注意：这不是线性代数的矩阵乘法！
 # 它只是把两个矩阵对应位置拿过来相乘。
+A: np.ndarray[int] = np.array([[1, 2], [3, 4]])
+B: np.ndarray[int] = np.array([[5, 6], [7, 8]])
+print(f"\nA=\n{A}")
+print(f"\nB=\n{B}")
+print(f"\n A * B = \n{A*B}")
 
 # ★ 记下来，新手最容易错的地方：
 #   a * b  → 逐元素乘法（对应位置相乘）
@@ -94,15 +113,18 @@ print("\n" + "=" * 55)
 print("第三步：矩阵乘法 @（机器学习核心操作）")
 print("=" * 55)
 
-A = np.array([[1, 2], [3, 4]])   # shape (2, 2)
-B = np.array([[5, 6], [7, 8]])   # shape (2, 2)
-
-print("A: shape", A.shape)
-print(A)
-print("B: shape", B.shape)
-print(B)
-
-print("\nA @ B（矩阵乘）:\n", A @ B)
+# A = np.array([[1, 2], [3, 4]])   # shape (2, 2)
+# B = np.array([[5, 6], [7, 8]])   # shape (2, 2)
+# print("A: shape", A.shape)
+# print(A)
+# print("B: shape", B.shape)
+# print(B)
+# print("\nA @ B（矩阵乘）:\n", A @ B)
+A: np.ndarray[int] = np.array([[1, 2, 3], [3, 4, 6]])
+B: np.ndarray[int] = np.array([[5, 6], [7, 8], [9, 10]])
+print(f"A=\n{A}\n A.shape: {A.shape}")
+print(f"B=\n{B}\n B.shape: {B.shape}")
+print(f"A @ B = \n {A @ B}")
 
 # 矩阵乘法的计算过程：
 # 结果的 [i, j] = A 的第 i 行 × B 的第 j 列（对应乘再加）
@@ -114,26 +136,31 @@ print("\nA @ B（矩阵乘）:\n", A @ B)
 #                       [1,0]       [1,1]
 
 # --- 矩阵 × 向量 ---
-mat = np.array([[1, 2, 3], [4, 5, 6]])   # shape (2, 3)
-vec = np.array([1, 2, 3])                 # shape (3,)
-print("\n矩阵 × 向量:")
-print("mat:", mat.shape)
-print("vec:", vec.shape)
-print("mat @ vec:", mat @ vec)            # shape (2,)
+# mat = np.array([[1, 2, 3], [4, 5, 6]])   # shape (2, 3)
+# vec = np.array([1, 2, 3])                 # shape (3,)
+# print("\n矩阵 × 向量:")
+# print("mat:", mat.shape)
+# print("vec:", vec.shape)
+# print("mat @ vec:", mat @ vec)            # shape (2,)
 # 结果 [i] = mat 的第 i 行 × vec（对应相乘再加）
 # [1×1+2×2+3×3, 4×1+5×2+6×3] = [14, 32]
+# NumPy 的 @ 运算符（矩阵乘法）自带一维数组广播适配规则,
+# 作为右操作数时，自动被视作列向量 (n,) → 隐式当成 (n,1)；
+mat: np.ndarray[int] = np.array([[1, 2, 3], [4, 5, 6]])  # 两行三列
+vec: np.ndarray[int] = np.array([1, 2, 3])   # 一行三列
+print(f"mat @ vec = \n{mat @ vec}")
 
 # --- 维度不匹配会报错 ---
-try:
-    wrong = np.array([[1, 2], [3, 4]]) @ np.array([1, 2, 3])
-except ValueError as e:
-    print("\n维度不匹配示例:")
-    print("  (2,2) @ (3,) →", e)
-
-# --- 验证：逐元素乘 vs 矩阵乘完全不同 ---
-print("\n★ 对比 A * B 和 A @ B 完全不同")
-print("A * B（逐元素乘）:\n", A * B)
-print("A @ B（矩阵乘）:\n", A @ B)
+# try:
+#     wrong = np.array([[1, 2], [3, 4]]) @ np.array([1, 2, 3])
+# except ValueError as e:
+#     print("\n维度不匹配示例:")
+#     print("  (2,2) @ (3,) →", e)
+#
+# # --- 验证：逐元素乘 vs 矩阵乘完全不同 ---
+# print("\n★ 对比 A * B 和 A @ B 完全不同")
+# print("A * B（逐元素乘）:\n", A * B)
+# print("A @ B（矩阵乘）:\n", A @ B)
 
 
 # ============================================================
@@ -146,15 +173,20 @@ print("\n" + "=" * 55)
 print("第四步：转置 .T（行列互换）")
 print("=" * 55)
 
-A = np.array([[1, 2, 3], [4, 5, 6]])   # shape (2, 3)
-print("A:\n", A, "\nshape:", A.shape)
-print("A.T:\n", A.T, "\nshape:", A.T.shape)
+# A = np.array([[1, 2, 3], [4, 5, 6]])   # shape (2, 3)
+# print("A:\n", A, "\nshape:", A.shape)
+# print("A.T:\n", A.T, "\nshape:", A.T.shape)
+#
+# # 应用场景：计算 x^T x（向量内积）
+# x = np.array([1, 2, 3])
+# print("\n向量 x:", x)
+# print("x @ x（内积）:", x @ x)       # 1×1+2×2+3×3=14
+A: np.ndarray[int] = np.array([[1, 2, 3], [4, 5, 6]])
+print(f"A=\n{A}\n A.shape: {A.shape}")
+print(f"A的转置矩阵 A.T=\n{A.T}")
 
-# 应用场景：计算 x^T x（向量内积）
-x = np.array([1, 2, 3])
-print("\n向量 x:", x)
-print("x @ x（内积）:", x @ x)       # 1×1+2×2+3×3=14
-
+x: np.ndarray[int] = np.array([1, 2, 3])
+print(f"x @ x = \n {x @ x.T}")
 
 # ============================================================
 # 第五步：逆矩阵与解线性方程组
@@ -170,14 +202,18 @@ print("\n" + "=" * 55)
 print("第五步：逆矩阵与解方程组")
 print("=" * 55)
 
-A = np.array([[3, 1], [1, 2]])
-print("A:\n", A)
-
+# A = np.array([[3, 1], [1, 2]])
+# print("A:\n", A)
+A: np.ndarray[int] = np.array([[3, 1], [1, 2]])
+print(f"\n A矩阵= \n{A} \n")
 # 逆矩阵
+# A_inv = np.linalg.inv(A)
+# print("\nA^-1:\n", A_inv.round(3))
 A_inv = np.linalg.inv(A)
-print("\nA^-1:\n", A_inv.round(3))
+print(f"A的逆矩阵= \n{A_inv.round(3)}")
+print(f"A @ A逆 = \n {A @ A_inv}")
 
-# 验证：A × A^-1 = I（单位矩阵）
+# # 验证：A × A^-1 = I（单位矩阵）
 identity = A @ A_inv
 print("A @ A^-1:\n", identity.round(3))
 # 对角线接近 1，非对角线接近 0 就是对的
@@ -187,6 +223,7 @@ print("A @ A^-1:\n", identity.round(3))
 #   3x +  y = 9
 #    x + 2y = 8
 # 写成矩阵形式：A × [x, y] = [9, 8]
+# A = np.array([[3, 1], [1, 2]])
 b = np.array([9, 8])
 x = np.linalg.solve(A, b)
 print("\n解方程组 Ax = b")
@@ -212,20 +249,32 @@ print("\n" + "=" * 55)
 print("第六步：特征值与特征向量（几何直观）")
 print("=" * 55)
 
+# A = np.array([[4, -2], [1, 1]])
+# print("矩阵 A:\n", A)
 A = np.array([[4, -2], [1, 1]])
-print("矩阵 A:\n", A)
 
-eigvals, eigvecs = np.linalg.eig(A)
-print("\n特征值:", eigvals)
-print("特征向量（列向量）:\n", eigvecs)
-# eigvecs[:, i] 是第 i 个特征向量
-# eigvals[i] 是第 i 个特征值
+# eigvals, eigvecs = np.linalg.eig(A)
+# print("\n特征值:", eigvals)
+# print("特征向量（列向量）:\n", eigvecs)
+# # eigvecs[:, i] 是第 i 个特征向量
+# # eigvals[i] 是第 i 个特征值
+eig_vals, eig_vecs = np.linalg.eig(A)
+print(f"A的特征值：\n{eig_vals}")
+print(f"A的特征向量：\n{eig_vecs}")
+
 
 # 验证 A × v = λ × v
-print("\n验证 A × v = λ × v（方向不变）:")
-for i in range(len(eigvals)):
-    v = eigvecs[:, i]
-    lam = eigvals[i]
+# print("\n验证 A × v = λ × v（方向不变）:")
+# for i in range(len(eigvals)):
+#     v = eigvecs[:, i]
+#     lam = eigvals[i]
+#     print(f"  v{i}: A·v = {A @ v}")
+#     print(f"       λ·v = {lam * v}")
+#     print(f"       基本相等 OK（有小误差正常）")
+print("\n验证 A * v = λ * v（方向不变）:")
+for i in range(len(eig_vals)):
+    v = eig_vecs[:, i]
+    lam = eig_vals[i]
     print(f"  v{i}: A·v = {A @ v}")
     print(f"       λ·v = {lam * v}")
     print(f"       基本相等 OK（有小误差正常）")
@@ -254,20 +303,26 @@ print("\n" + "#" * 55)
 print("# 动手练习")
 print("#" * 55)
 
-# 练习 1：矩阵乘法维度推断
+# # 练习 1：矩阵乘法维度推断
 A = np.arange(6).reshape(3, 2)
 B = np.arange(8).reshape(2, 4)
 print("\nA shape:", A.shape, "  B shape:", B.shape)
 # 先想：A @ B 的结果 shape 是什么？为什么？
+# 想的结果：(3, 4)
+# 原因： 首先，A和B是两个矩阵。其次，使用了@运算符，做了矩阵乘法。 矩阵乘法是 (m, p) @ (p, n) → (m, n), 这个是矩阵运行的规律。
 # 再写代码验证
-# C = ...
+C = A @ B
+print(f"C shape: {C.shape}")
 
 # 练习 2：解线性方程组
 # 2x + y = 5
 # x - 3y = -8
 # 用 np.linalg.solve 求解
 # ↓ 你的代码
-# x = ...
+x = np.array([[2, 1], [1, -3]])
+v = np.array([5, -8])
+result = np.linalg.solve(x, v)
+print(f"r = {result}   x={result[0]}  y={result[1]}")
 
 # 练习 3：向量的内积与长度
 a = np.array([1, 2, 3])
@@ -275,4 +330,12 @@ b = np.array([4, 5, 6])
 # 公式：a·b = ||a|| × ||b|| × cos(θ)
 # 先用 a @ b 算内积，再用 np.linalg.norm 算长度
 # 然后求出夹角 cos(θ)
-# ↓ 你的代码
+dot = a @ b
+len_a = np.linalg.norm(a)
+len_b = np.linalg.norm(b)
+cos_theta = dot / (len_a * len_b)
+print(f"\na·b = {dot}")
+print(f"||a|| = {len_a}")
+print(f"||b|| = {len_b}")
+print(f"cos(θ) = {cos_theta}")
+
