@@ -10,7 +10,6 @@ dependencies = [
     "jupyter>=1.1.1",
     "matplotlib>=3.10.3",
     "opencv-python>=4.11.0.86",
-    "wxpython>=4.2.3",
     "torch>=2.7.1",
     "torchvision>=0.22.1",
     "langgraph>=1.2.2",
