@@ -1,0 +1,21 @@
+# 房价预测项目配置 —— 改参数不改代码（所有相对路径均相对项目根目录解析）
+data:
+  raw_path: "data/raw/california_housing.csv"   # 原始数据缓存位置（download.py 首次运行自动下载）
+  test_size: 0.2          # 测试集占比（前置文档 §5.3 留出法）
+  random_state: 42        # 固定随机种子：每次划分结果一致，实验可复现
+
+features:
+  target_col: "MedHouseVal"            # 目标列：街区房价中位数，单位 10 万美元
+  add_engineered_features: true        # 是否添加组合特征（BedroomRatio / RoomsPerPerson / LogMedInc）
+
+model:
+  name: "linear_regression"   # 可选：linear_regression / ridge
+  params:
+    alpha: 1.0                # 仅 ridge 使用，即前置文档 §6 的正则化强度 λ
+
+train:
+  model_dir: "models"                 # 训练产物保存目录
+  model_filename: "model.joblib"      # 模型文件名（joblib 序列化，内含 model + scaler + 特征列名）
+
+evaluate:
+  figures_dir: "reports/figures"      # 残差图、预测对比图的保存目录
