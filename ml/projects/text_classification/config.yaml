@@ -1,0 +1,41 @@
+# AG News 文本分类项目配置 —— 改参数不改代码（所有相对路径均相对项目根目录解析）
+data:
+  raw_dir: "data/raw"       # 缓存目录：ag_news_train.csv / ag_news_test.csv
+  train_subset: 20000       # 从官方 120000 条训练集里取多少条（None = 全量，慢但更好）
+  val_size: 0.1             # 验证集占比：从【训练子集】里再切出来，不能碰测试集
+  random_state: 42          # 固定随机种子：取子集、切验证集结果一致，实验可复现
+
+features:
+  max_len: 64               # 每条新闻最多保留多少个词（句首 [CLS] 占 1 位，超出截断、不足补 [PAD]）
+  vocab_size: 20000         # 词表上限（含 3 个特殊 token），按词频从高到低保留
+  min_freq: 2               # 词频低于该值的词不进词表（进也是 [UNK]）
+
+model:
+  d_model: 128              # 词向量/隐层维度，必须是 nhead 的整数倍
+  nhead: 4                  # 注意力头数（前置文档 §5：多头 = 多组 Q/K/V 并行看不同模式）
+  num_layers: 2             # TransformerEncoderLayer 堆叠层数
+  dim_feedforward: 256      # 每层内部 FFN 的隐层宽度
+  dropout: 0.1              # 词嵌入后、注意力内部、FFN 内部的 dropout 比例
+  num_classes: 4            # AG News 四类：World / Sports / Business / Sci-Tech
+
+train:
+  lr: 0.0005                # Adam 初始学习率（Transformer 对 lr 比 MLP 敏感，别太大）
+  batch_size: 64            # 每个 batch 的样本数
+  epochs: 10                # 最大训练轮数（早停可能提前结束）
+  weight_decay: 0.0         # L2 正则强度，0 = 不加
+  device: "auto"            # auto：有 cuda 用 cuda，否则 cpu；也可写死 "cuda" / "cpu"
+  early_stopping:
+    enabled: true           # 早停开关（验证集不再进步就别浪费时间）
+    patience: 3             # 验证 loss 连续多少个 epoch 不创新低就停
+  lr_scheduler:
+    type: "cosine"          # 学习率调度：step / cosine / none（Transformer 常用平滑衰减）
+    step_size: 10           # StepLR：每多少个 epoch 衰减一次
+    gamma: 0.5              # StepLR：衰减系数
+    t_max: 10               # CosineAnnealingLR：半个余弦周期的 epoch 数（对齐 epochs）
+  model_dir: "models"               # 训练产物保存目录
+  model_filename: "best.pt"         # checkpoint 文件名（验证集最优的那个 epoch）
+  history_filename: "history.json"  # 每 epoch 的 train_loss/val_loss/val_acc 序列
+  vocab_filename: "vocab.json"      # 词表——预测时必须复现同一个词表，和模型一起保存
+
+evaluate:
+  figures_dir: "reports/figures"  # 混淆矩阵热力图与训练曲线的保存目录

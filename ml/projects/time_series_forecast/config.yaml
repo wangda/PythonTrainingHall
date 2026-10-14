@@ -1,0 +1,38 @@
+# ETTh1 多变量时序预测项目配置 —— 改参数不改代码（所有相对路径均相对项目根目录解析）
+data:
+  raw_path: "data/raw/etth1.csv"  # 缓存位置（ETTh1 原始 csv，含 date 列 + 7 个传感器列）
+  target_col: "OT"        # 预测目标：OT = Oil Temperature（油温）
+  feature_cols: ["HUFL", "HULL", "MUFL", "MULL", "LUFL", "LULL", "OT"]  # 多变量输入：6 路负载 + 油温
+  window_size: 96         # 输入窗口长：96 个小时点 = 过去 4 天（ETTh1 为小时级采样，实测确认）
+  horizon: 4              # 预测步长：未来 4 个小时点（目标形状 (n, horizon)，多步直接输出）
+  val_ratio: 0.15         # 验证集占比：按时间先后从尾部切（禁止 shuffle，前置文档 §6）
+  test_ratio: 0.15        # 测试集占比：时间轴上最后一段
+  random_state: 42        # 固定随机种子：DataLoader shuffle 与初始化可复现
+
+model:
+  input_size: 7           # 与 feature_cols 列数一致（多变量输入）
+  hidden_size: 64         # LSTM 隐状态维度
+  num_layers: 2           # LSTM 堆叠层数
+  dropout: 0.1            # 层间 dropout（num_layers>1 时才生效）
+  # 输出层：Linear(hidden_size → horizon)，末层无激活——回归任务的输出是任意实数
+
+train:
+  lr: 0.001               # Adam 初始学习率
+  batch_size: 64          # 每个 batch 的窗口样本数
+  epochs: 30              # 最大训练轮数（早停可能提前结束）
+  weight_decay: 0.0       # L2 正则强度（Adam 的 weight_decay），0 = 不加
+  device: "auto"          # auto：有 cuda 用 cuda，否则 cpu；也可写死 "cuda" / "cpu"
+  early_stopping:
+    enabled: true         # 早停开关（验证集不再进步就别浪费时间）
+    patience: 5           # 验证 loss 连续多少个 epoch 不创新低就停
+  lr_scheduler:
+    type: "step"          # 学习率调度：step（StepLR）/ none（本项目只支持这两种）
+    step_size: 10         # StepLR：每多少个 epoch 衰减一次
+    gamma: 0.5            # StepLR：衰减系数（新 lr = 旧 lr × gamma）
+  model_dir: "models"             # 训练产物保存目录
+  model_filename: "best.pt"       # checkpoint 文件名（保存的是验证集最优的那个 epoch，不是最后一个）
+  history_filename: "history.json"  # 每 epoch 的 train_loss/val_loss 序列，画训练曲线用
+
+evaluate:
+  figures_dir: "reports/figures"  # 预测对比曲线与训练曲线的保存目录
+  plot_points: 480        # 预测 vs 真实曲线图取测试集头部多少个点（480 个小时点 = 20 天）

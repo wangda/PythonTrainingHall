@@ -1,0 +1,30 @@
+# CIFAR-10 迁移学习项目配置 —— 改参数不改代码（所有相对路径均相对项目根目录解析）
+data:
+  raw_dir: "data/raw"     # CIFAR-10 缓存目录（首次运行自动下载，约 170MB，需联网）
+  val_size: 5000          # 从 5 万训练集里切出的验证集大小（测试集 1 万张只在最后评估用）
+  random_state: 42        # 固定随机种子：train/val 划分可复现
+
+features:
+  image_size: 224         # resnet18 路线：224（预训练模型习惯的尺寸，前置文档 §6.5）
+                          # lenet 路线：改成 32（原生尺寸，别放大白烧算力）
+  augment: true           # 训练集数据增强开关（RandomCrop + 水平翻转；验证/测试集永远不增强）
+
+model:
+  name: "resnet18"        # 可选：lenet（从零基线）/ resnet18（迁移学习）
+  finetune: "head_only"   # 仅 resnet18：head_only（冻结主干只训头）/ full（全量微调，分组 lr）
+  pretrained: true        # 仅 resnet18：true=加载 ImageNet 预训练权重（迁移学习的全部意义）
+  num_classes: 10
+
+train:
+  epochs: 2               # CPU 友好默认值；有 GPU 可加到 5~10
+  batch_size: 64
+  lr_head: 0.001          # 新分类头学习率（大踏步）
+  lr_backbone_deep: 0.0001    # full 微调时深层主干（layer4）学习率
+  lr_backbone_shallow: 0.00001  # full 微调时浅层主干学习率（小碎步，前置文档 §6.4）
+  log_interval: 100       # 每多少个 batch 打印一次训练 loss
+  num_workers: 0          # DataLoader 进程数：Windows 必须 0；Linux/Mac 可调大加速
+  model_dir: "models"     # 训练产物保存目录
+  model_filename: "model.pt"  # torch.save 打包：权重 + config 快照 + meta
+
+evaluate:
+  figures_dir: "reports/figures"  # 混淆矩阵 / 错分样本图的保存目录

@@ -1,0 +1,35 @@
+# Fashion-MNIST 分类项目配置 —— 改参数不改代码（所有相对路径均相对项目根目录解析）
+data:
+  raw_path: "data/raw/fashion_mnist.npz"  # 缓存位置（uint8 原始像素 0~255，np.savez_compressed）
+  val_size: 0.1           # 验证集占比：从【训练集】里再切出来，不能碰测试集（前置文档 §8 三集合）
+  random_state: 42        # 固定随机种子：每次划分结果一致，实验可复现
+
+features:
+  normalize: true         # 像素归一化开关：/255 压到 [0,1]（Fashion-MNIST 像素上限固定 255）
+  standardize: false      # 可选标准化：(x-均值)/标准差，统计量只用训练子集计算，防泄漏
+
+model:
+  input_dim: 784          # 28×28 展平后的特征数
+  hidden_sizes: [128, 64] # 隐藏层宽度列表，create_model 按它动态堆叠 Linear+ReLU
+  num_classes: 10         # Fashion-MNIST 十类服饰
+
+train:
+  lr: 0.001               # Adam 初始学习率
+  batch_size: 128         # 每个 batch 的样本数
+  epochs: 30              # 最大训练轮数（早停可能提前结束）
+  weight_decay: 0.0       # L2 正则强度（Adam 的 weight_decay），0 = 不加
+  device: "auto"          # auto：有 cuda 用 cuda，否则 cpu；也可写死 "cuda" / "cpu"
+  early_stopping:
+    enabled: true         # 早停开关（前置文档 §8：验证集不再进步就别浪费时间）
+    patience: 5           # 验证 loss 连续多少个 epoch 不创新低就停
+  lr_scheduler:
+    type: "step"          # 学习率调度：step（StepLR）/ cosine（CosineAnnealingLR）/ none
+    step_size: 10         # StepLR：每多少个 epoch 衰减一次
+    gamma: 0.5            # StepLR：衰减系数（新 lr = 旧 lr × gamma）
+    t_max: 30             # CosineAnnealingLR：半个余弦周期的 epoch 数
+  model_dir: "models"             # 训练产物保存目录
+  model_filename: "best.pt"       # checkpoint 文件名（保存的是验证集最优的那个 epoch，不是最后一个）
+  history_filename: "history.json"  # 每 epoch 的 train_loss/val_loss/val_acc 序列，画训练曲线用
+
+evaluate:
+  figures_dir: "reports/figures"  # 混淆矩阵热力图与训练曲线的保存目录

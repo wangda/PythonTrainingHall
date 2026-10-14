@@ -1,0 +1,39 @@
+# Titanic 生存预测项目配置 —— 改参数不改代码（所有相对路径均相对项目根目录解析）
+data:
+  raw_path: "data/raw/titanic.csv"  # OpenML 下载后的本地缓存（首次运行自动生成）
+  test_size: 0.2          # 测试集占比（前置文档 §11.4：测试集只在最后用一次）
+  random_state: 42        # 固定随机种子：划分可复现
+
+features:
+  add_family_features: true   # 是否添加组合特征 family_size / is_alone（项目文档 §4）
+
+model:
+  # 可选：decision_tree / random_forest / lightgbm / xgboost（项目文档 §6）
+  name: "lightgbm"
+  params:               # 透传给所选模型的构造参数（切换 name 时记得同步改这里）
+    n_estimators: 500
+    learning_rate: 0.05
+    num_leaves: 31
+    max_depth: -1
+    min_child_samples: 20
+    random_state: 42
+    verbose: -1
+
+train:
+  model_dir: "models"                 # 训练产物保存目录
+  model_filename: "model.joblib"      # 模型文件名（打包 model + 预处理 state + meta）
+
+tune:
+  n_splits: 5                 # 分层 K 折交叉验证的折数（前置文档 §11.4）
+  early_stopping_rounds: 50   # 早停耐心（§11.3）
+  val_size: 0.2               # 早停用验证集占训练折的比例
+  num_leaves_grid: [15, 31, 63]           # stage 2 结构参数网格
+  min_child_samples_grid: [20, 50, 100]
+  feature_fraction_grid: [0.7, 0.8, 0.9, 1.0]   # stage 3 采样参数网格
+  bagging_fraction_grid: [0.7, 0.8, 0.9, 1.0]
+  lambda_l2_grid: [0.0, 0.1, 1.0, 10.0]         # stage 4 正则参数网格
+  final_learning_rate: 0.02               # stage 4 收尾：砍学习率再早停
+  report_path: "reports/tuning_report.md" # 调参报告输出位置
+
+evaluate:
+  figures_dir: "reports/figures"      # 混淆矩阵 / ROC 曲线 / 特征重要性图的保存目录

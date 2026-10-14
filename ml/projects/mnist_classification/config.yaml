@@ -1,0 +1,23 @@
+# 手写数字分类项目配置 —— 改参数不改代码（所有相对路径均相对项目根目录解析）
+data:
+  dataset: "digits"       # 数据源：digits（sklearn 内置 1797 张 8×8，秒级训练）
+                          #         / mnist（OpenML 70000 张 28×28，首次下载后缓存 npz）
+  raw_path: "data/raw/mnist.npz"   # mnist 的缓存位置（digits 内置无需缓存）
+  test_size: 0.2          # 测试集占比（01-线性回归前置学习文档 §5.3 留出法）
+  random_state: 42        # 固定随机种子：每次划分结果一致，实验可复现
+
+features:
+  normalize: true         # 像素归一化开关：除以像素最大值（digits 16 / mnist 255，按数据集自动取）
+
+model:
+  name: "logistic_regression"   # 可选：logistic_regression
+  params:
+    C: 1.0                # 正则化强度的倒数 C=1/λ（01 前置文档 §6：C 越小正则越强）
+    max_iter: 1000        # lbfgs 最大迭代步数（前置文档 §4 梯度下降的迭代上限）
+
+train:
+  model_dir: "models"                 # 训练产物保存目录
+  model_filename: "model.joblib"      # 模型文件名（joblib 序列化，内含 model + 数据集元信息）
+
+evaluate:
+  figures_dir: "reports/figures"      # 混淆矩阵热力图的保存目录

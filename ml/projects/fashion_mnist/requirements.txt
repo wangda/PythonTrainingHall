@@ -1,0 +1,12 @@
+# 运行环境
+numpy
+scikit-learn
+matplotlib
+pyyaml
+
+# 深度学习框架
+torch
+torchvision
+
+# 测试
+pytest

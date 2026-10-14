@@ -1,0 +1,12 @@
+# 运行环境（深度学习框架）
+torch
+torchvision
+
+# 评估与工具
+numpy
+scikit-learn
+matplotlib
+pyyaml
+
+# 测试
+pytest

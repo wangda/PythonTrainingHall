@@ -1,0 +1,10 @@
+# 运行环境
+numpy
+pandas
+scikit-learn
+matplotlib
+pyyaml
+joblib
+
+# 测试
+pytest

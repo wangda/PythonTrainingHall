@@ -1,0 +1,14 @@
+# 运行环境
+numpy
+pandas
+scikit-learn
+matplotlib
+pyyaml
+joblib
+
+# 树模型主力（前置文档 §11）；xgboost 为对比用，可选
+lightgbm
+# xgboost
+
+# 测试
+pytest
