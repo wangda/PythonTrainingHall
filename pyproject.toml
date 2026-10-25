@@ -32,3 +32,28 @@ torchvision = [
 name = "pytorch-cu132"
 url = "https://download.pytorch.org/whl/cu132"
 explicit = true
+
+[dependency-groups]
+dev = [
+    "pyright>=1.1.414",
+    "pytest>=9.1.1",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.pyright]
+typeCheckingMode = "strict"
+include = ["langgraph", "modern_python"]
+exclude = ["**/__pycache__", ".venv"]
+pythonVersion = "3.12"
+
+[tool.pytest.ini_options]
+testpaths = ["modern_python"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["modern_python"]
