@@ -4,16 +4,22 @@
 Java 里你会抽 interface 再让两个类 implements；Python 里请用 Protocol。
 """
 
+from typing import Protocol
+
+
+class Exporter(Protocol):
+    def export(self, title: str, rows: list[tuple[str, int]]) -> str:
+        ...
 
 class PdfExporter:
-    def export(self, title, rows):
-        lines = [f"# {title}"]
+    def export(self, title: str, rows: list[tuple[str, int]]) -> str:
+        lines: list[str] = [f"# {title}"]
         for name, score in rows:
             lines.append(f"- {name}: {score}")
         return "\n".join(lines)
 
 
-def render_report(exporter, title, rows):
+def render_report(exporter: Exporter, title: str, rows: list[tuple[str, int]]):
     return exporter.export(title, rows)
 
 

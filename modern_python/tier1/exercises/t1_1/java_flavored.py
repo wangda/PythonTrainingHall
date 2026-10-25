@@ -5,48 +5,48 @@
 
 
 class ShoppingCartItem:
-    def __init__(self, name, price, quantity):
-        self.name = name
-        self.price = price
-        self.quantity = quantity
+    def __init__(self, name: str, price: float, quantity: int):
+        self.name: str = name
+        self.price: float = price
+        self.quantity: int = quantity
 
 
 class ShoppingCart:
     def __init__(self):
-        self.items = []
+        self.items : list[ShoppingCartItem] = []
 
-    def add_item(self, item):
+    def add_item(self, item: ShoppingCartItem):
         self.items.append(item)
 
-    def total(self):
-        result = 0.0
+    def total(self) -> float:
+        result: float = 0.0
         for item in self.items:
             result += item.price * item.quantity
         return result
 
-    def find_by_name(self, name):
+    def find_by_name(self, name: str) -> ShoppingCartItem | None:
         for item in self.items:
             if item.name == name:
                 return item
         return None
 
-    def discounted_amounts(self, rate):
+    def discounted_amounts(self, rate: float | int):
         if rate > 1 or rate < 0:
             raise ValueError("rate must be in [0, 1]")
         return [item.price * item.quantity * rate for item in self.items]
 
 
-def summarize(cart, sep=", "):
-    names = []
+def summarize(cart: ShoppingCart, sep: str=", ") -> str:
+    names: list[str] = []
     for item in cart.items:
         names.append(item.name)
     return sep.join(names)
 
 
-def cheapest_item(cart):
+def cheapest_item(cart: ShoppingCart) -> ShoppingCartItem | None:
     if not cart.items:
         return None
-    best = cart.items[0]
+    best: ShoppingCartItem = cart.items[0]
     for item in cart.items:
         if item.price < best.price:
             best = item
@@ -54,7 +54,7 @@ def cheapest_item(cart):
 
 
 if __name__ == "__main__":
-    cart = ShoppingCart()
+    cart: ShoppingCart = ShoppingCart()
     cart.add_item(ShoppingCartItem("apple", 5.0, 3))
     cart.add_item(ShoppingCartItem("banana", 2.5, 6))
     print(summarize(cart))
