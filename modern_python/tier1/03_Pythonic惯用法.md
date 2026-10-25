@@ -25,7 +25,7 @@ Java 对照：`stream().map().filter().toList()`。区别是 comprehension 是�
 
 ## 2. EAFP vs LBYL
 
-Java 是 LBYL 世界（Look Before You Leap）：先判空、先 containsKey、先 exists。Python 的文化是 EAFP（Easier to Ask Forgiveness than Permission）：
+Java 是 LBYL 世界（Look Before You Leap）：先判空、先 containsKey、先 exists。Python 的文化**不反对**用异常表达"尝试"（EAFP，Easier to Ask Forgiveness than Permission）——但更准确的说法是：**失败罕见时优先 EAFP，失败常见时别拿异常当控制流**。不是"凡判断皆 try"。
 
 ```python
 # LBYL（Java 味）
@@ -44,11 +44,40 @@ except KeyError:
 value = config.get(key, DEFAULT)
 ```
 
-适用判断：
+### 2.1 实测：EAFP 什么时候反而更慢
 
-- **EAFP**：操作大概率成功、竞争条件下检查与使用之间有时间窗（TOCTOU）、异常路径不频繁。
-- **LBYL**：失败是常态、异常开销显著、except 无法精确圈定错误来源。
-- 不确定时，先查标准库：`dict.get`、`dict.setdefault`、`next(iter, default)` 这类"带默认值的 API"往往直接消灭这个问题。
+Python 3.12 实测（单位 ns/次，越小越好）：
+
+| 场景 | EAFP（try/except） | LBYL（先检查） | 结论 |
+|------|-------------------|----------------|------|
+| dict 命中 | 13.3 | 23.5 | EAFP 快约 1.8 倍 |
+| dict 缺失 | 74.4 | 15.3 | LBYL 快约 5 倍 |
+| int 解析合法 | 43.4 | 58.1 | EAFP 略快 |
+| int 解析非法 | 466.3 | 15.1 | LBYL 快约 30 倍 |
+
+规律：3.11+ 的 try 块本身几乎零成本——**没抛异常就不付钱**；但抛一次异常要 400+ ns，是普通判断的几十倍。所以 EAFP 的收益只存在于"成功是常态、失败是例外"的路径上；失败频繁（脏数据、可选配置、用户输入）时，异常开销会主导耗时，你的"低效"直觉在这种情况下完全正确。
+
+### 2.2 文化推崇 EAFP 的两个真正理由
+
+性能不是理由（见 2.1，它只在成功路径占优），这两条才是：
+
+1. **原子性（TOCTOU）**：`if path.exists(): open(path)` 在判断和打开之间文件可能被删。`try: open(path) except FileNotFoundError` 是一次原子尝试，没有时间窗。多线程/多进程场景这是正确性问题，不是风格问题。
+2. **协议式解析**：`int(raw)` 内部已实现完整解析规则；先用 `isdigit()` 预检是重复实现一遍规则，而且不完整——`" 12 "`、`"+5"`、`"1_000"` 的 `isdigit()` 行为都不是你想要的。让操作自己失败，你只负责接住。
+
+反方向同理：`except` 里的分支如果**经常**被执行，说明失败不是例外——此时异常成了正常控制流，既慢又难读，应该改回 LBYL。
+
+### 2.3 决策顺序（比二元对立更实用）
+
+1. **标准库有带默认值的 API，就用它**：`dict.get`、`dict.setdefault`、`getattr(obj, name, default)`、`next(it, default)`、`os.environ.get`。这不是 EAFP 也不是 LBYL，是让 API 表达意图——通常可读性和性能都最好（实测 14–19 ns）。
+2. **检查与使用之间有竞态**（文件、网络、共享状态）→ EAFP。
+3. **失败是常态**（用户输入、脏数据、可选字段）→ LBYL 或先集中校验。
+4. **失败罕见且无法低成本预检**（协议解析、类型转换）→ EAFP，`except` 只圈住那一行，异常类型收窄。
+5. **性能敏感的热路径** → 先测再定，不背教条。
+
+### 2.4 可读性：EAFP 容易写坏的两个地方
+
+1. 控制流被拆成两条通道（正常走 try、异常走 except），Java 背景的人读起来需要额外心智负担——尤其当 except 分支承担了主要业务逻辑时。
+2. `except` 写得太宽会吞掉意外错误：`try` 块里混入无关逻辑时，真正的 bug（如 `TypeError`）会被掩盖。规则：**try 只圈住可能失败的那一行，except 只捕获你预期且能处理的类型**。
 
 ## 3. 鸭子类型：能力判断，不是血统判断
 
@@ -147,7 +176,8 @@ if item is not None:     # 不要 if item == None，更不要 if not item（0 �
 ## 9. 自检清单
 
 - [ ] 四种 comprehension 各写出一个不查资料的例子
-- [ ] 能说出一个 EAFP 合适、LBYL 合适的场景各一个
+- [ ] 能说出一个 EAFP 合适、LBYL 合适的场景各一个，并解释为什么（失败频率决定收益）
+- [ ] 记得先找 `.get()` / `getattr(..., default)` 这类带默认值的 API，再考虑 EAFP/LBYL
 - [ ] `range(len(...))` 出现在自己代码里时会有警觉
 - [ ] 知道 `x or default` 在 `x=0` 时的坑
 - [ ] 路径操作第一反应是 pathlib

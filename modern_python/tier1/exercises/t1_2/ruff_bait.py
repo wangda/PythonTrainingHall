@@ -30,7 +30,7 @@ def process(items=[]):
 from typing import Any
 
 
-def process(items: list[Any] = None) -> list[str]:
+def process(items: list[Any] | None = None) -> list[str]:
     if items is None:
         items = []
 

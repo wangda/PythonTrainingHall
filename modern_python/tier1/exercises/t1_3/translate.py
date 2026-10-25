@@ -11,76 +11,54 @@
 
 自查：改完后全文搜索 range(len( ——应该一个都不剩。
 """
-
+from typing import Any
 
 def squares(numbers: list[int]) -> list[int]:
-    result = []
-    for i in range(len(numbers)):
-        result.append(numbers[i] * numbers[i])
-    return result
+    return [n*n for n in numbers]
 
 
 def positive_evens(values: list[int]) -> list[int]:
-    positives = []
-    for x in values:
-        if x > 0 and x % 2 == 0:
-            positives.append(x)
-    return positives
+    return [x for x in values if x > 0 and x % 2 == 0]
 
 
 def name_lengths(names: list[str]) -> dict[str, int]:
-    mapping = {}
-    for name in names:
-        mapping[name] = len(name)
-    return mapping
+    return {name: len(name) for name in names}
 
 
-def common_items(list_a: list, list_b: list) -> list:
-    common = []
-    for item in list_a:
-        if item in list_b:
-            common.append(item)
-    return common
+def common_items(list_a: list[Any], list_b: list[Any]) -> list[Any]:
+    return [x for x in list_a if x in list_b]
 
 
 def is_finished(status: str) -> bool:
-    if status == "paid" or status == "shipped" or status == "done":
-        return True
-    return False
+    return status == "paid" or status == "shipped" or status == "done"
 
 
 def argmax(scores: list[int]) -> int:
-    best = 0
-    for i in range(len(scores)):
-        if scores[i] > scores[best]:
+    best: int = 0
+    for i, n in enumerate(scores):
+        if n > scores[best]:
             best = i
     return best
 
 
 def print_pairs(names: list[str], scores: list[int]) -> None:
-    for i in range(len(names)):
-        print(f"{names[i]}: {scores[i]}")
+    for i, s in enumerate(names):
+        print(f"{s}: {scores[i]}")
 
 
 def csv_line(fields: list[str]) -> str:
-    line = ""
-    for i in range(len(fields)):
-        line += fields[i]
-        if i != len(fields) - 1:
-            line += ","
-    return line
+    return ",".join(fields)
 
 
 def swap(a: int, b: int) -> tuple[int, int]:
-    tmp = a
-    a = b
-    b = tmp
+    b, a = a, b
     return a, b
 
 
 def read_config_at(data_dir: str) -> str:
     # (10) 拼路径读文件——提示：os.path 两层嵌套，想想 pathlib 的 / 运算符
-    path = os.path.join(os.path.dirname(data_dir), "..", "data", "config.toml")
+    from pathlib import Path
+    path = Path(data_dir) / ".." / "data" / "config.toml"
     with open(path) as f:
         content = f.read()
     return content

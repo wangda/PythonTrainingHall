@@ -17,19 +17,20 @@ import os
 
 def read_config(path):
     config = {}
-    if os.path.exists(path):
+    try:
         with open(path) as f:
             config = json.load(f)
+    except FileNotFoundError:
+        pass
     return config
 
 
 def get_env(name):
-    if name in os.environ:
-        return os.environ[name]
-    return None
+    return os.environ.get(name, None)
 
 
 def parse_port(raw):
-    if raw.isdigit():
+    try:
         return int(raw)
-    return 8080
+    except ValueError:
+        return 8080

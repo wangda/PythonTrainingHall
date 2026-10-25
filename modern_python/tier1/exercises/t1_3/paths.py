@@ -16,8 +16,9 @@ def report(root):
     py_count = 0
     total_lines = 0
     for dirpath, dirnames, filenames in os.walk(root):
+        print(dirpath, dirnames, filenames)
         for filename in filenames:
-            if filename.endswith(".py"):
+            if filename.endswith(".md"):
                 full = os.path.join(dirpath, filename)
                 py_count += 1
                 with open(full, encoding="utf-8") as f:
